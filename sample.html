@@ -1,0 +1,841 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Sample package &mdash; ePub2XML 1.0a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="ePub2XML 1.0a documentation" href="index.html"/>
+        <link rel="up" title="toXML" href="modules.html"/>
+        <link rel="prev" title="ePub2XML" href="ePub2XML.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ePub2XML
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="convert.html">Procédure de conversion ePub vers XML TEI</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">toXML</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ePub2XML.html">ePub2XML</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sample package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-sample.css">sample.css module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sample.epub">sample.epub module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sample.image">sample.image module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sample.json">sample.json module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sample.path">sample.path module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sample.xhtml">sample.xhtml module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sample.xml">sample.xml module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ePub2XML</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">toXML</a> &raquo;</li>
+        
+      <li>Sample package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/sample.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sample-package">
+<h1>Sample package<a class="headerlink" href="#sample-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-sample.css">
+<span id="sample-css-module"></span><h2>sample.css module<a class="headerlink" href="#module-sample.css" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sample.css.CSS">
+<em class="property">class </em><code class="descclassname">sample.css.</code><code class="descname">CSS</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Get CSS file list from the ePub temp extracted folder and parse it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">CSS Object</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="sample.css.CSS.find_by_name">
+<code class="descname">find_by_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.find_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.find_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find rule by rule name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.generate_list">
+<code class="descname">generate_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.generate_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.generate_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the css file list in the ePub tmp folder.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.get_alignment">
+<code class="descname">get_alignment</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.get_alignment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.get_alignment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.has_char_style">
+<code class="descname">has_char_style</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.has_char_style"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.has_char_style" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.has_para_style">
+<code class="descname">has_para_style</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.has_para_style"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.has_para_style" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.is_True">
+<code class="descname">is_True</code><span class="sig-paren">(</span><em>tag</em>, <em>dec</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.is_True"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.is_True" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.is_bold">
+<code class="descname">is_bold</code><span class="sig-paren">(</span><em>cls_val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.is_bold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.is_bold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.is_bold_italic">
+<code class="descname">is_bold_italic</code><span class="sig-paren">(</span><em>cls_val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.is_bold_italic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.is_bold_italic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.is_italic">
+<code class="descname">is_italic</code><span class="sig-paren">(</span><em>cls_val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.is_italic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.is_italic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.is_normal_only">
+<code class="descname">is_normal_only</code><span class="sig-paren">(</span><em>cls_val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.is_normal_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.is_normal_only" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.is_pcap">
+<code class="descname">is_pcap</code><span class="sig-paren">(</span><em>cls_val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.is_pcap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.is_pcap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.is_retrait">
+<code class="descname">is_retrait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.is_retrait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.is_retrait" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.is_sub">
+<code class="descname">is_sub</code><span class="sig-paren">(</span><em>cls_val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.is_sub"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.is_sub" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.is_sup">
+<code class="descname">is_sup</code><span class="sig-paren">(</span><em>cls_val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.is_sup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.is_sup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.list_rule">
+<code class="descname">list_rule</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.list_rule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.list_rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return CSS object list as dict.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">CSS list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#list" title="(in Python v2.7)">list</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.name">
+<code class="descname">name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>parsed</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the file, parse and return the CSS object as list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parsed</strong> (<em>obj</em>) &#8211; Parsed rule from CSS file as Object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.css.CSS.unit_parse">
+<code class="descname">unit_parse</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#CSS.unit_parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSS.unit_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the unit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Parsed unit</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str or None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sample.css.CSSRule">
+<em class="property">class </em><code class="descclassname">sample.css.</code><code class="descname">CSSRule</code><a class="reference internal" href="_modules/sample/css.html#CSSRule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.CSSRule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Object from CSS parsing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">CSSRule</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="sample.css.CSSRule.attrib">
+<code class="descname">attrib</code><a class="headerlink" href="#sample.css.CSSRule.attrib" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Rule attribute as string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">CSSRule.attrib</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sample.css.CSSRule.name">
+<code class="descname">name</code><a class="headerlink" href="#sample.css.CSSRule.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Rule name as string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">CSSRule.name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sample.css.PriorityRule">
+<em class="property">class </em><code class="descclassname">sample.css.</code><code class="descname">PriorityRule</code><span class="sig-paren">(</span><em>css</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#PriorityRule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.PriorityRule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Priority class to define what is the priority with these style.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">alignement</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="sample.css.PriorityRule.has_class">
+<code class="descname">has_class</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#PriorityRule.has_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.PriorityRule.has_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if the tag Element has the the class attribute in.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.css.PriorityRule.has_style">
+<code class="descname">has_style</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#PriorityRule.has_style"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.PriorityRule.has_style" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if the tag Element has the the syle attribute in.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.css.PriorityRule.priority">
+<code class="descname">priority</code><span class="sig-paren">(</span><em>tag</em>, <em>rule_dec='text-align'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#PriorityRule.priority"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.PriorityRule.priority" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the priority from style or class if they exist.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">alignement</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.css.PriorityRule.set_to_default">
+<code class="descname">set_to_default</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#PriorityRule.set_to_default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.PriorityRule.set_to_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sample.css.ePubClass">
+<em class="property">class </em><code class="descclassname">sample.css.</code><code class="descname">ePubClass</code><span class="sig-paren">(</span><em>tag</em>, <em>css</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#ePubClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.ePubClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Get the alignment value from the tag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">align</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="sample.css.ePubClass.declaration">
+<code class="descname">declaration</code><span class="sig-paren">(</span><em>rule_dec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#ePubClass.declaration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.ePubClass.declaration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the priority of the class declaration and return the result.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">declaration</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.css.ePubClass.find_by_name">
+<code class="descname">find_by_name</code><span class="sig-paren">(</span><em>rule_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#ePubClass.find_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.ePubClass.find_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find rule by name.</p>
+<p>Check if the rule name is in the rule list generated from the CSS file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">rule</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.css.ePubClass.find_dec">
+<code class="descname">find_dec</code><span class="sig-paren">(</span><em>rule</em>, <em>rule_dec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#ePubClass.find_dec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.ePubClass.find_dec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the declaration by name from the CSS file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.css.ePubClass.get_dec">
+<code class="descname">get_dec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#ePubClass.get_dec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.ePubClass.get_dec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.ePubClass.get_rule_list">
+<code class="descname">get_rule_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#ePubClass.get_rule_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.ePubClass.get_rule_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the rule list if rule is more than one in one tag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#list" title="(in Python v2.7)">list</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.css.ePubClass.has_dec">
+<code class="descname">has_dec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#ePubClass.has_dec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.ePubClass.has_dec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.ePubClass.has_many_rule">
+<code class="descname">has_many_rule</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#ePubClass.has_many_rule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.ePubClass.has_many_rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if the tag has many rule inside the class attribute.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tag</strong> (<em>lxml.Element</em>) &#8211; Tag element to parse</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.css.ePubClass.set_to_default">
+<code class="descname">set_to_default</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#ePubClass.set_to_default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.ePubClass.set_to_default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the default value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sample.css.ePubStyle">
+<em class="property">class </em><code class="descclassname">sample.css.</code><code class="descname">ePubStyle</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#ePubStyle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.ePubStyle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Get the alignment value from the tag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">align</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="sample.css.ePubStyle.declaration">
+<code class="descname">declaration</code><span class="sig-paren">(</span><em>rule_dec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#ePubStyle.declaration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.ePubStyle.declaration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.ePubStyle.get_dec">
+<code class="descname">get_dec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#ePubStyle.get_dec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.ePubStyle.get_dec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.css.ePubStyle.has_dec">
+<code class="descname">has_dec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/css.html#ePubStyle.has_dec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.css.ePubStyle.has_dec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sample.epub">
+<span id="sample-epub-module"></span><h2>sample.epub module<a class="headerlink" href="#module-sample.epub" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sample.epub.ePub">
+<em class="property">class </em><code class="descclassname">sample.epub.</code><code class="descname">ePub</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/epub.html#ePub"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.epub.ePub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Read ePub file.
+Return data form ePub.</p>
+<dl class="method">
+<dt id="sample.epub.ePub.extract">
+<code class="descname">extract</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/epub.html#ePub.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.epub.ePub.extract" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.epub.ePub.read">
+<code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/epub.html#ePub.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.epub.ePub.read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sample.image">
+<span id="sample-image-module"></span><h2>sample.image module<a class="headerlink" href="#module-sample.image" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sample.image.Image">
+<em class="property">class </em><code class="descclassname">sample.image.</code><code class="descname">Image</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/image.html#Image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.image.Image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="sample.image.Image.copy_to">
+<code class="descname">copy_to</code><span class="sig-paren">(</span><em>dest</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/image.html#Image.copy_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.image.Image.copy_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sample.json">
+<span id="sample-json-module"></span><h2>sample.json module<a class="headerlink" href="#module-sample.json" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sample.json.Config">
+<em class="property">class </em><code class="descclassname">sample.json.</code><code class="descname">Config</code><span class="sig-paren">(</span><em>config_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/json.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.json.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="sample.json.Config.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>param_type</em>, <em>param_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/json.html#Config.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.json.Config.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.json.Config.read_conf">
+<code class="descname">read_conf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/json.html#Config.read_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.json.Config.read_conf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sample.path">
+<span id="sample-path-module"></span><h2>sample.path module<a class="headerlink" href="#module-sample.path" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sample.path.Path">
+<em class="property">class </em><code class="descclassname">sample.path.</code><code class="descname">Path</code><a class="reference internal" href="_modules/sample/path.html#Path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.path.Path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sample.xhtml">
+<span id="sample-xhtml-module"></span><h2>sample.xhtml module<a class="headerlink" href="#module-sample.xhtml" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sample.xhtml.XHTML">
+<em class="property">class </em><code class="descclassname">sample.xhtml.</code><code class="descname">XHTML</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xhtml.html#XHTML"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xhtml.XHTML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="sample.xhtml.XHTML.convert">
+<code class="descname">convert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xhtml.html#XHTML.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xhtml.XHTML.convert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.xhtml.XHTML.create_output_folder">
+<code class="descname">create_output_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xhtml.html#XHTML.create_output_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xhtml.XHTML.create_output_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output the result in specific folder.
+Default folder is &#8216;/tmp&#8217;</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sample.xml">
+<span id="sample-xml-module"></span><h2>sample.xml module<a class="headerlink" href="#module-sample.xml" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sample.xml.XML">
+<em class="property">class </em><code class="descclassname">sample.xml.</code><code class="descname">XML</code><span class="sig-paren">(</span><em>path</em>, <em>xhtml_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#XML"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.XML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Write XML file.</p>
+<dl class="method">
+<dt id="sample.xml.XML.build">
+<code class="descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#XML.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.XML.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build XML for output.
+Builder pattern.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.xml.XML.build_alignment">
+<code class="descname">build_alignment</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#XML.build_alignment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.XML.build_alignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Paragraph alignment.
+Facade pattern to access the alignment value of the tag.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.xml.XML.build_attr2">
+<code class="descname">build_attr2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#XML.build_attr2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.XML.build_attr2" title="Permalink to this definition">¶</a></dt>
+<dd><p>New version of attributes translator.</p>
+<p><strong>Note :</strong> If there is a char style rule in the paragraph, we will just skip it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.xml.XML.build_bloc">
+<code class="descname">build_bloc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#XML.build_bloc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.XML.build_bloc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the principal bloc.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.xml.XML.build_content">
+<code class="descname">build_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#XML.build_content"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.XML.build_content" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.xml.XML.build_defnotes">
+<code class="descname">build_defnotes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#XML.build_defnotes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.XML.build_defnotes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.xml.XML.build_entities">
+<code class="descname">build_entities</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#XML.build_entities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.XML.build_entities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update all knowing entities to the right value in XML.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.xml.XML.build_heading">
+<code class="descname">build_heading</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#XML.build_heading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.XML.build_heading" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.xml.XML.build_img">
+<code class="descname">build_img</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#XML.build_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.XML.build_img" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find all img tag and update them to figure with the attribute value for XML.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.xml.XML.build_link">
+<code class="descname">build_link</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#XML.build_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.XML.build_link" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.xml.XML.build_table">
+<code class="descname">build_table</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#XML.build_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.XML.build_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update and change table tag.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.xml.XML.get_class_list">
+<code class="descname">get_class_list</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#XML.get_class_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.XML.get_class_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of the class value in specific tag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Class value if exist</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.xml.XML.output_file">
+<code class="descname">output_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#XML.output_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.XML.output_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Just create the output file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sample.xml.khTag">
+<em class="property">class </em><code class="descclassname">sample.xml.</code><code class="descname">khTag</code><span class="sig-paren">(</span><em>tree</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#khTag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.khTag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Implemeted tool for working with tag and simplifing the using of the tag.</p>
+<dl class="method">
+<dt id="sample.xml.khTag.add_parent">
+<code class="descname">add_parent</code><span class="sig-paren">(</span><em>tag</em>, <em>new_parent</em>, <em>dec</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#khTag.add_parent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.khTag.add_parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enveloppe the tag with the new specified parent with these attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sample.xml.khTag.find_xml_tag">
+<code class="descname">find_xml_tag</code><span class="sig-paren">(</span><em>tag_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#khTag.find_xml_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.khTag.find_xml_tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sample.xml.khTag.update_tag">
+<code class="descname">update_tag</code><span class="sig-paren">(</span><em>ass_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sample/xml.html#khTag.update_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sample.xml.khTag.update_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of assossiation tag and transform one by one all tag to theire respective assossiation with attributes.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="ePub2XML.html" class="btn btn-neutral" title="ePub2XML" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Hantsaniala.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0a',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: ''
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

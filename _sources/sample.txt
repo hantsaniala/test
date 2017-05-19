@@ -1,0 +1,65 @@
+Sample package
+==============
+
+sample.css module
+-----------------
+
+.. automodule:: sample.css
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+
+sample.epub module
+------------------
+
+.. automodule:: sample.epub
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+
+sample.image module
+-------------------
+
+.. automodule:: sample.image
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+
+sample.json module
+------------------
+
+.. automodule:: sample.json
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+
+sample.path module
+------------------
+
+.. automodule:: sample.path
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+
+sample.xhtml module
+-------------------
+
+.. automodule:: sample.xhtml
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+
+sample.xml module
+-----------------
+
+.. automodule:: sample.xml
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:

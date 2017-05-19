@@ -1,0 +1,283 @@
+
+Procédure de conversion ePub vers XML TEI
+*********************************************
+.. note:: Seule cette section est en français pour aider l'opérateur à faciliter sa tâche. Par contre, la documentation des codes se fait en anglais.
+.. seealso:: `Liste des abréviations`_
+
+Préparation avant la conversion
+================================
+
+Pour la conversion, quelques étapes de préparation sont nécessaires pour pouvoir convertir le fichier ePub en fichier XML TEI.
+
+
+Procédure de balisage
+-------------------------
+
+La balisage des attributs nécessaires pour la conversion est de la forme :code:`xml-<tag_name>`.
+
+Ici comme exemple, nous spécifions que toutes les :code:`<p class="Ct">` sont à convertir en :code:`<caption>` :
+
+Ceci :
+
+.. code-block:: html
+
+    <p class="Ct xml-caption">Cupidatat occaecat sint consectetur labore.</p>
+
+Donne :
+
+.. code-block:: html
+
+    <caption rendition="justify">Cupidatat occaecat sint consectetur labore.</caption>
+
+.. note:: 
+    Pas besoin de préciser à chaque fois le même type de tag pour chaque style. Une fois suffit.
+
+.. important::
+
+    Les feuilles de style (classes) principaux doivent être **au début** de chaque déclaration.
+
+        **Exemple :**
+
+            Comme ceci :
+
+            .. code-block:: html
+
+                <p class="Ct xml-caption">Cupidatat occaecat sint consectetur labore.</p>
+            
+            Et non :
+
+            .. code-block:: html
+
+                <p class="xml-caption Ct">Cupidatat occaecat sint consectetur labore.</p>
+
+.. attention:: La balisage ne peut pas s'effectuée seule. Les balises XML doivent **toujours** être accompagnés de feuille de style (ou classe). Donc, **seules les balises ayant des feuilles de style** (ou classes) peuvent être balisées.
+
+
+En-tête
+-------------
+
+Part
+^^^^^^^^^^^^^^^^
+
+Balisée par :code:`xml-part`, elle sera convertie en :code:`<head/>`.
+
+Ce code :
+
+.. code-block:: html
+
+    <p class="Chapter xml-chapter">Cupidatat occaecat sint consectetur labore.</p>
+
+Donne :
+
+.. code-block:: html
+
+    <head>Cupidatat occaecat sint consectetur labore.</head>
+
+
+Chapter
+^^^^^^^^^^^^^^^^
+
+Balisé par :code:`xml-chapter`, elle sera convertie en :code:`<head rendition="#chaptertitle"/>`.
+
+Ce code :
+
+.. code-block:: html
+
+    <p class="Chapter xml-chapter">Cupidatat occaecat sint consectetur labore.</p>
+
+Donne :
+
+.. code-block:: html
+
+    <head type="#chaptertitle">Cupidatat occaecat sint consectetur labore.</head>
+
+
+Section
+^^^^^^^^^^^^^^^^
+
+Balisée par :code:`xml-stitre1`, elle sera convertie en :code:`<head type="#sectiontitle"/>`.
+
+Ce code :
+
+.. code-block:: html
+
+    <p class="Stitre1 xml-stitre1">Cupidatat occaecat sint consectetur labore.</p>
+
+Donne :
+
+.. code-block:: html
+
+    <head type="#sectiontitle">Cupidatat occaecat sint consectetur labore.</head>
+
+.. _`Section note`:
+
+.. note:: Sous-section, sous-sous-section et le reste suivent le même principe.
+
+
+Citations et exergues
+-----------------------
+
+Caption
+^^^^^^^^^^^^^^^^
+
+Balisée par :code:`xml-caption`, elle sera convertie en :code:`<caption/>`.
+
+Ce code :
+
+.. code-block:: html
+
+    <p class="Ct xml-caption">Cupidatat occaecat sint consectetur labore.</p>
+
+Donne :
+
+.. code-block:: html
+
+    <caption>Cupidatat occaecat sint consectetur labore.</caption>
+
+
+Tableau
+------------------------
+:code:`[Contenu en cours]`
+
+Notes
+------------------------
+:code:`[Contenu en cours]`
+
+Images
+------------------------
+:code:`[Contenu en cours]`
+
+Éléments à supprimer
+------------------------
+
+xSpan
+^^^^^^^^^^^^^^^^
+
+Balisée par :code:`xml-xspan`, elle sera juste effacée mais le contenu reste.
+
+Ce code :
+
+.. code-block:: html
+
+    <p class="Ct xml-caption">Cupidatat <span class="charOverride-10 xml-xspan">occaecat sint consectetur</span> labore.</p>
+
+Donne :
+
+.. code-block:: html
+
+    <caption>Cupidatat occaecat sint consectetur labore.</caption>
+
+.. _`xSpan note`:
+
+.. note:: Le **x** avant le nom de la balise (:code:`xml-xhr`, :code:`xml-xspan`, ...) sert de repère pour indiquer que cette balise sera juste effacée en gardant son contenu par contre.
+
+xHr
+^^^^^^^^^^^^^^^^
+Balisée par :code:`xml-xhr`, elle sera juste effacée.
+
+**Exemple :**
+
+.. code-block:: html
+
+    <hr class="FootnoteRule xml-xhr"/>
+
+.. seealso:: `xSpan note`_
+
+
+Liste des balises
+================================
+
+En-têtes
+------------------
+- :code:`xml-part` : Titre partie. (Voir Part_)
+- :code:`xml-chapter` : Titre chapitre. (Voir Chapter_)
+- :code:`xml-stitre1` : Titre section. (Voir Section_)
+- :code:`xml-stitre2` : Titre sous-section. (Voir `Section note`_)
+
+Images
+------------------
+- :code:`xml-fig` : Figure. (Voir Images_)
+- :code:`xml-fig-div` : Bloc d'image.
+- :code:`xml-caption` : Légende. (Voir Caption_)
+
+Tableaux
+------------------
+- :code:`xml-table` : Tableau.
+- :code:`xml-table-head` : Titre de tableau.
+
+Notes
+------------------
+
+Notes de bas de page
+^^^^^^^^^^^^^^^^^^^^^^
+- :code:`xml-footnote` : Note de bas de page.
+- :code:`xml-footnote-link` : Lien note de bas de page.
+- :code:`xml-footnote-div` : Bloc note de bas de page (ID).
+
+Note de fin
+^^^^^^^^^^^^^^^^^^^^^^
+- :code:`xml-endnote` : Note de fin de chapitre.
+- :code:`xml-endnote-link` : Lien note de fin de page.
+- :code:`xml-endnote-div` : Bloc note de fin de page (ID).
+
+Appelle de note
+^^^^^^^^^^^^^^^^^^^^^^
+- :code:`xml-appnote-a` : Appel de note de type :code:`a`.
+- :code:`xml-appnote-span` : Appel de note de type :code:`span`.
+- :code:`xml-appnote-link` : Lien appel de note.
+
+Blocs standards
+------------------
+- :code:`xml-para-std` : Texte standard.
+- :code:`xml-list` : Liste.
+
+Elements à supprimer
+---------------------
+- :code:`xml-xspan` : Span qui sera supprimé lors de la conversion. (Voir xSpan_)
+- :code:`xml-xhr` : Filet de note qui sera effacé lors de la conversion. (Voir xHr_)
+
+.. note:: D'autres balises peuvent ne pas être dans la liste car elles varient d'un fichier à un autre.
+
+
+Liste des abréviations
+================================
+
+Quelques abréviations sont utilisées pour faciliter la rédaction et éviter trop la répétition.
+
++---------+-------------------------------+
+| Sigle   | Nom                           |
++=========+===============================+
+| ID      | InDesing                      |
++---------+-------------------------------+
+| OO      | OpenOffice                    |
++---------+-------------------------------+
+
+
+Fonctionnalités
+=============================================
+
+Ce que le programme peut faire
+-----------------------------------
+#. Convertir les attributs suivant ses balises réspéctives.
+    
+    Donc les attributs sont convertis en leurs équivalences sur XML dans cet ordre précis : 
+    
+    :code:`<hi rend="sc | up | lo > u > b > i > sup | sub"/>`
+
+#. Convertir quelques balises suivant la structure `TEI`_. (Voir `Liste des balises`_)
+
+.. _`TEI`: http://teibyexample.org
+
+
+En cours de concéption
+-------------------------
+
+#. Monter les notes de bas de pages et de fins.
+#. Automatisation des blocs de division pour les niveaux de titre et sous-titre.
+#. Création d'une interface graphique.
+
+
+Contributeur
+========================
+
+- Testeur : Neo

@@ -1,0 +1,7 @@
+ePub2XML
+===============
+
+.. automodule:: ePub2XML
+    :members:
+    :undoc-members:
+    :show-inheritance:

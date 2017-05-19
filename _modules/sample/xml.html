@@ -1,0 +1,758 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sample.xml &mdash; ePub2XML 1.0a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="ePub2XML 1.0a documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ePub2XML
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../convert.html">Procédure de conversion ePub vers XML TEI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">toXML</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ePub2XML</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>sample.xml</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sample.xml</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
+
+<span class="kn">import</span> <span class="nn">lxml.html</span> <span class="k">as</span> <span class="nn">LH</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span><span class="p">,</span> <span class="n">Tag</span>
+<span class="kn">from</span> <span class="nn">lxml</span> <span class="k">import</span> <span class="n">etree</span>
+<span class="kn">from</span> <span class="nn">lxml.html</span> <span class="k">import</span> <span class="n">XHTMLParser</span>
+
+<span class="kn">from</span> <span class="nn">.css</span> <span class="k">import</span> <span class="n">CSS</span><span class="p">,</span> <span class="n">PriorityRule</span>
+<span class="kn">from</span> <span class="nn">.json</span> <span class="k">import</span> <span class="n">Config</span>
+<span class="kn">from</span> <span class="nn">.path</span> <span class="k">import</span> <span class="n">Path</span>
+
+
+<div class="viewcode-block" id="XML"><a class="viewcode-back" href="../../sample.html#sample.xml.XML">[docs]</a><span class="k">class</span> <span class="nc">XML</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Write XML file.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">xhtml_list</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Create the XML.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Init XML&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xhtml_list</span> <span class="o">=</span> <span class="n">xhtml_list</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_css</span> <span class="o">=</span> <span class="n">CSS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">HTMLParser</span><span class="p">()</span>
+        <span class="c1"># self._link_type = Enum(link, ref_page, ref_numpara)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_livre</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;TEI&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">ElementTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_livre</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_corps</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_livre</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Reading all file and append it to the tree.</span>
+        <span class="k">for</span> <span class="n">xhtml</span> <span class="ow">in</span> <span class="n">xhtml_list</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">xhtml</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span> <span class="o">=</span> <span class="n">XHTMLParser</span><span class="p">(</span><span class="n">resolve_entities</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span> <span class="o">=</span> <span class="n">LH</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">xhtml</span><span class="p">))</span>
+                <span class="c1"># logging.debug(etree.tostring(self._tree))</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Error !</span><span class="se">\n\t</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_khtag</span> <span class="o">=</span> <span class="n">khTag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_file</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_update_hi_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_list</span><span class="p">,</span> <span class="n">attrib</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item_list</span> <span class="o">!=</span> <span class="p">[]:</span>
+                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">item_list</span><span class="p">:</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;hi&#39;</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;rend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrib</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;style&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_list</span><span class="p">,</span> <span class="n">new_tag</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item_list</span> <span class="o">!=</span> <span class="p">[]:</span>
+                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">item_list</span><span class="p">:</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">new_tag</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_envelop_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">new_parent</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Envelop the tag with a parent tag without changing its position.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">tag</span><span class="o">.</span><span class="n">addnext</span><span class="p">(</span><span class="n">new_parent</span><span class="p">)</span>
+        <span class="n">parent</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__update_attrib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">attr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># etree.strip_attributes(element)</span>
+            <span class="n">elemnt</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="XML.build_defnotes"><a class="viewcode-back" href="../../sample.html#sample.xml.XML.build_defnotes">[docs]</a>    <span class="k">def</span> <span class="nf">build_defnotes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># FIXME #2 : Doesn&#39;t work if not generated from ID</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Build Defnotes&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_div_footnote_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span>
+            <span class="s1">&#39;//div[@class=&quot;_idFootnote&quot;]&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_div_footnote_list</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="k">for</span> <span class="n">div_footnote</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_div_footnote_list</span><span class="p">:</span>
+                <span class="n">div_footnote</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;note&#39;</span>
+                <span class="n">div_footnote</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_div_footnote_bloc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span>
+            <span class="s1">&#39;//div[@class=&quot;_idFootnotes&quot;]&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_div_footnote_bloc</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="k">for</span> <span class="n">div_bloc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_div_footnote_bloc</span><span class="p">:</span>
+                <span class="n">div_bloc</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;defnotes&#39;</span>
+                <span class="n">div_bloc</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_note_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s2">&quot;//p[@class=&#39;Footnote&#39;]&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_note_list</span> <span class="o">!=</span> <span class="p">[]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_defnotes</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;defnotes&#39;</span><span class="p">)</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="XML.build_heading"><a class="viewcode-back" href="../../sample.html#sample.xml.XML.build_heading">[docs]</a>    <span class="k">def</span> <span class="nf">build_heading</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_head_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//h1&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_head_list</span><span class="p">,</span> <span class="s1">&#39;head&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XML.build_content"><a class="viewcode-back" href="../../sample.html#sample.xml.XML.build_content">[docs]</a>    <span class="k">def</span> <span class="nf">build_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="XML.build_attr2"><a class="viewcode-back" href="../../sample.html#sample.xml.XML.build_attr2">[docs]</a>    <span class="k">def</span> <span class="nf">build_attr2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        New version of attributes translator.</span>
+
+<span class="sd">        **Note :** If there is a char style rule in the paragraph, we will just skip it.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">prio</span> <span class="o">=</span> <span class="n">PriorityRule</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_css</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_span_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//span&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_span_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="p">[]:</span>
+            <span class="k">for</span> <span class="n">span</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_span_list</span><span class="p">:</span>
+                <span class="c1"># FIXME : Be aware, sometimes vertical align may be a pixel value not</span>
+                <span class="c1"># only text.</span>
+                <span class="n">is_sup</span> <span class="o">=</span> <span class="n">is_sub</span> <span class="o">=</span> <span class="n">prio</span><span class="o">.</span><span class="n">priority</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;vertical-align&#39;</span><span class="p">)</span>
+                <span class="n">is_italic</span> <span class="o">=</span> <span class="n">prio</span><span class="o">.</span><span class="n">priority</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;font-style&#39;</span><span class="p">)</span>
+                <span class="n">is_bold</span> <span class="o">=</span> <span class="n">prio</span><span class="o">.</span><span class="n">priority</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;font-weight&#39;</span><span class="p">)</span>
+                <span class="n">is_underline</span> <span class="o">=</span> <span class="n">prio</span><span class="o">.</span><span class="n">priority</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;text-decoration&#39;</span><span class="p">)</span>
+                <span class="n">is_upper</span> <span class="o">=</span> <span class="n">is_low</span> <span class="o">=</span> <span class="n">prio</span><span class="o">.</span><span class="n">priority</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;text-transform&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Small-caps value is not constant.</span>
+                <span class="n">is_sc</span> <span class="o">=</span> <span class="n">prio</span><span class="o">.</span><span class="n">priority</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;font-size&#39;</span><span class="p">)</span>
+                <span class="n">is_sc2</span> <span class="o">=</span> <span class="n">prio</span><span class="o">.</span><span class="n">priority</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;font-variant&#39;</span><span class="p">)</span>
+
+                <span class="c1"># These condition order must be lie this because of the</span>
+                <span class="c1"># priority of the tag order if there are many attributes in the</span>
+                <span class="c1"># same tag. The priority order is sc | up | lo &gt; u &gt; b &gt; i &gt;</span>
+                <span class="c1"># sup | sub</span>
+
+                <span class="k">if</span> <span class="n">is_sc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># This value is not fixed, lets figure out the best way to change</span>
+                    <span class="c1"># it dynamicaly depend of the file value.</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># WARNING : Risk of having footnote with an small-caps hi</span>
+                    <span class="c1"># if is_sc == &#39;75%&#39; or is_sc == &#39;83%&#39;:</span>
+                    <span class="k">if</span> <span class="n">is_sc</span> <span class="o">==</span> <span class="s1">&#39;75%&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">span</span><span class="o">.</span><span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">span</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">span</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_khtag</span><span class="o">.</span><span class="n">add_parent</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;hi&#39;</span><span class="p">,</span> <span class="s1">&#39;rend&#39;</span><span class="p">,</span> <span class="s1">&#39;sc&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">is_sc2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">is_sc2</span> <span class="o">==</span> <span class="s1">&#39;small-caps&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">span</span><span class="o">.</span><span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">span</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">span</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_khtag</span><span class="o">.</span><span class="n">add_parent</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;hi&#39;</span><span class="p">,</span> <span class="s1">&#39;rend&#39;</span><span class="p">,</span> <span class="s1">&#39;sc&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">is_upper</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">is_upper</span> <span class="o">==</span> <span class="s1">&#39;uppercase&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_khtag</span><span class="o">.</span><span class="n">add_parent</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;hi&#39;</span><span class="p">,</span> <span class="s1">&#39;rend&#39;</span><span class="p">,</span> <span class="s1">&#39;up&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">is_low</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">is_low</span> <span class="o">==</span> <span class="s1">&#39;lowercase&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_khtag</span><span class="o">.</span><span class="n">add_parent</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;hi&#39;</span><span class="p">,</span> <span class="s1">&#39;rend&#39;</span><span class="p">,</span> <span class="s1">&#39;lw&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">is_underline</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">is_underline</span> <span class="o">==</span> <span class="s1">&#39;underline&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_khtag</span><span class="o">.</span><span class="n">add_parent</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;hi&#39;</span><span class="p">,</span> <span class="s1">&#39;rend&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">is_bold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">is_bold</span> <span class="o">==</span> <span class="s1">&#39;bold&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_khtag</span><span class="o">.</span><span class="n">add_parent</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;hi&#39;</span><span class="p">,</span> <span class="s1">&#39;rend&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">is_italic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">is_italic</span> <span class="o">==</span> <span class="s1">&#39;italic&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_khtag</span><span class="o">.</span><span class="n">add_parent</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;hi&#39;</span><span class="p">,</span> <span class="s1">&#39;rend&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">is_sup</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">is_sup</span> <span class="o">==</span> <span class="s1">&#39;top&#39;</span> <span class="ow">or</span> <span class="n">is_sup</span> <span class="o">==</span> <span class="s1">&#39;super&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_khtag</span><span class="o">.</span><span class="n">add_parent</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;hi&#39;</span><span class="p">,</span> <span class="s1">&#39;rend&#39;</span><span class="p">,</span> <span class="s1">&#39;sup&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">is_sub</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">is_sub</span> <span class="o">==</span> <span class="s1">&#39;bottom&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_khtag</span><span class="o">.</span><span class="n">add_parent</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="s1">&#39;hi&#39;</span><span class="p">,</span> <span class="s1">&#39;rend&#39;</span><span class="p">,</span> <span class="s1">&#39;sub&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XML.build_entities"><a class="viewcode-back" href="../../sample.html#sample.xml.XML.build_entities">[docs]</a>    <span class="k">def</span> <span class="nf">build_entities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Update all knowing entities to the right value in XML.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_br</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//br&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_br</span><span class="p">,</span> <span class="s1">&#39;lb&#39;</span><span class="p">)</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="XML.build_table"><a class="viewcode-back" href="../../sample.html#sample.xml.XML.build_table">[docs]</a>    <span class="k">def</span> <span class="nf">build_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Update and change table tag.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_td</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//td&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//tr&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="p">,</span> <span class="s1">&#39;cell&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tr</span><span class="p">,</span> <span class="s1">&#39;row&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XML.build_link"><a class="viewcode-back" href="../../sample.html#sample.xml.XML.build_link">[docs]</a>    <span class="k">def</span> <span class="nf">build_link</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># FIXME #2 : Doesn&#39;t work if not generated from ID</span>
+        <span class="c1"># FIXME : &#39;a&#39; tag not change if without class.</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Build Link&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//a&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;href&#39;</span> <span class="ow">in</span> <span class="n">a</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s1">&#39;class&#39;</span> <span class="ow">in</span> <span class="n">a</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">r&#39;_idFootnoteAnchor&#39;</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]):</span>
+                            <span class="c1"># a.tag = &#39;ntb&#39;</span>
+                            <span class="k">pass</span>
+                        <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">r&#39;_idFootnoteLink&#39;</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]):</span>
+                            <span class="n">a</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;apnb&#39;</span>
+                            <span class="c1"># Get id from href url</span>
+                            <span class="n">i</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
+                                <span class="s1">r&#39;..\/Text\/([\w\d\-\.]+)#(?P&lt;id&gt;[\w\d-]+)&#39;</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">])</span>
+                            <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">a</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+                                <span class="c1"># a.text = &#39;&#39;</span>
+                                <span class="n">a</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                <span class="n">a</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">pass</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">a</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;ref&#39;</span>
+                        <span class="n">a</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">]</span>
+                        <span class="n">a</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="s1">&#39;id&#39;</span> <span class="ow">in</span> <span class="n">a</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">r&#39;_idIndexMarker&#39;</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">a</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;renvlnk&#39;</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XML.build_img"><a class="viewcode-back" href="../../sample.html#sample.xml.XML.build_img">[docs]</a>    <span class="k">def</span> <span class="nf">build_img</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Find all img tag and update them to figure with the attribute value for XML.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Build Img&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//img&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">fig</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fig</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;figure&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_img</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s1">&#39;graphic&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Get the file name, remove the path</span>
+                <span class="c1"># and return the file name only.</span>
+                <span class="n">rgx</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;../Images/(.*)&#39;</span><span class="p">)</span>
+                <span class="n">img_name</span> <span class="o">=</span> <span class="n">rgx</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fig</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_img</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span>
+                    <span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="o">.</span><span class="n">fname_wo_ext</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">img_name</span>
+
+                <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="n">fig</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+                    <span class="n">fig</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">att</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XML.build_alignment"><a class="viewcode-back" href="../../sample.html#sample.xml.XML.build_alignment">[docs]</a>    <span class="k">def</span> <span class="nf">build_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Paragraph alignment.</span>
+<span class="sd">        Facade pattern to access the alignment value of the tag.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Set paragraph alignment&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//p&#39;</span><span class="p">)</span>  <span class="c1"># For all p found</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_css</span><span class="p">)</span>
+            <span class="n">prio</span> <span class="o">=</span> <span class="n">PriorityRule</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_css</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">):</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">p</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;rendition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prio</span><span class="o">.</span><span class="n">priority</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s1">&#39;text-align&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">prio</span><span class="o">.</span><span class="n">priority</span><span class="p">(</span>
+                            <span class="n">p</span><span class="p">,</span> <span class="s1">&#39;text-align&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;justify&#39;</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_has_attrib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">attrib</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Check if the tag has some spectific attibute in.</span>
+<span class="sd">        Return the attribute value if true.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">attrib</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">attrib</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+<div class="viewcode-block" id="XML.build_bloc"><a class="viewcode-back" href="../../sample.html#sample.xml.XML.build_bloc">[docs]</a>    <span class="k">def</span> <span class="nf">build_bloc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Build the principal bloc.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Build Bloc&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//body&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;div&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;chapter&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_p_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assossiated_list</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">tag_class</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="n">tag_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+
+        <span class="n">khtag</span> <span class="o">=</span> <span class="n">khTag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assossiated_list</span> <span class="o">=</span> <span class="n">khtag</span><span class="o">.</span><span class="n">find_xml_tag</span><span class="p">(</span><span class="n">tag_dict</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assossiated_list</span><span class="p">)</span>
+        <span class="n">khtag</span><span class="o">.</span><span class="n">update_tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assossiated_list</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XML.build"><a class="viewcode-back" href="../../sample.html#sample.xml.XML.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Build XML for output.</span>
+<span class="sd">        Builder pattern.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="p">[</span><span class="n">step</span><span class="p">()</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">build_defnotes</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">build_heading</span><span class="p">,</span>
+                                 <span class="c1"># self.build_content,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">build_entities</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">build_table</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">build_link</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">build_img</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">build_alignment</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">build_attr2</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">build_bloc</span>
+                                 <span class="p">)]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_corps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Can&#39;t build file !</span><span class="se">\n</span><span class="s2">Error :</span><span class="se">\n\t</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="XML.output_file"><a class="viewcode-back" href="../../sample.html#sample.xml.XML.output_file">[docs]</a>    <span class="k">def</span> <span class="nf">output_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Just create the output file.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="o">.</span><span class="n">fname_wo_ext</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="o">.</span><span class="n">fname_wo_ext</span> <span class="o">+</span> <span class="s2">&quot;.xml&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xml_declaration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                             <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;xml&quot;</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Writing success&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Can&#39;t write file&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XML.get_class_list"><a class="viewcode-back" href="../../sample.html#sample.xml.XML.get_class_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_class_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get the list of the class value in specific tag.</span>
+
+<span class="sd">        :return: Class value if exist</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__class_value</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class_value</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="khTag"><a class="viewcode-back" href="../../sample.html#sample.xml.khTag">[docs]</a><span class="k">class</span> <span class="nc">khTag</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Implemeted tool for working with tag and simplifing the using of the tag.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tree</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span> <span class="o">=</span> <span class="n">tree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assossiated_list</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">_get_astd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">tag_dict</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get the assossiation between the xml-tag and the tag itself. So if we had these relationship, we can iterate throw all tag to update these assossiated tag with the respected value.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">tag_dict</span> <span class="o">=</span> <span class="n">tag_dict</span>
+        <span class="n">rgx</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">r&quot;xml-([\w-]+)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;class&#39;</span> <span class="ow">in</span> <span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">])</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Checking if had many value&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Ok it has&#39;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Lauching the matching process&#39;</span><span class="p">)</span>
+                        <span class="n">srch_res</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">rgx</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;srch_res : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">srch_res</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="n">srch_res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Match !&#39;</span><span class="p">)</span>
+
+                            <span class="c1"># Append key and value if exist or create if not.</span>
+                            <span class="c1"># {</span>
+                            <span class="c1">#   xml-tag:</span>
+                            <span class="c1">#   {</span>
+                            <span class="c1">#     tag: [class]</span>
+                            <span class="c1">#   }</span>
+                            <span class="c1"># }</span>
+                            <span class="c1">#</span>
+                            <span class="c1"># Source :</span>
+                            <span class="c1"># http://stackoverflow.com/a/12906014/5527968</span>
+
+                            <span class="n">tag_class</span> <span class="o">=</span> <span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+                            <span class="k">if</span> <span class="n">tag_dict</span><span class="p">[</span><span class="n">srch_res</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">tag</span><span class="p">):</span>
+                                <span class="n">tag_dict</span><span class="p">[</span><span class="n">srch_res</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)][</span>
+                                    <span class="n">tag</span><span class="o">.</span><span class="n">tag</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag_class</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">tag_dict</span><span class="p">[</span><span class="n">srch_res</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)][</span><span class="n">tag</span><span class="o">.</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                                    <span class="n">tag_class</span><span class="p">]</span>
+
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_assossiated_list</span> <span class="o">=</span> <span class="n">tag_dict</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># FIXME : If only one value from the class.</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Tag cannot be only one.&#39;</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="k">pass</span>
+
+<div class="viewcode-block" id="khTag.find_xml_tag"><a class="viewcode-back" href="../../sample.html#sample.xml.khTag.find_xml_tag">[docs]</a>    <span class="k">def</span> <span class="nf">find_xml_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_dict</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Find all xml-tag&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_p_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//*&#39;</span><span class="p">)</span>  <span class="c1"># For all existing tag</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_astd</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">tag_dict</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assossiated_list</span></div>
+
+<div class="viewcode-block" id="khTag.update_tag"><a class="viewcode-back" href="../../sample.html#sample.xml.khTag.update_tag">[docs]</a>    <span class="k">def</span> <span class="nf">update_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ass_list</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get the list of assossiation tag and transform one by one all tag to theire respective assossiation with attributes.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">xml_tag</span> <span class="ow">in</span> <span class="n">ass_list</span><span class="p">:</span>
+
+            <span class="c1"># Heading level</span>
+            <span class="k">if</span> <span class="n">xml_tag</span> <span class="o">==</span> <span class="s1">&#39;part&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_xhtml_tag</span><span class="p">(</span><span class="n">ass_list</span><span class="p">,</span> <span class="n">xml_tag</span><span class="p">,</span> <span class="s1">&#39;head&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">xml_tag</span> <span class="o">==</span> <span class="s1">&#39;chapter&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_xhtml_tag</span><span class="p">(</span><span class="n">ass_list</span><span class="p">,</span> <span class="n">xml_tag</span><span class="p">,</span> <span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="s1">&#39;rendition&#39;</span><span class="p">:</span> <span class="s1">&#39;#chaptertitle&#39;</span><span class="p">})</span>
+            <span class="k">if</span> <span class="n">xml_tag</span> <span class="o">==</span> <span class="s1">&#39;stitre1&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_xhtml_tag</span><span class="p">(</span><span class="n">ass_list</span><span class="p">,</span> <span class="n">xml_tag</span><span class="p">,</span> <span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="s1">&#39;rendition&#39;</span><span class="p">:</span> <span class="s1">&#39;#sectiontitle&#39;</span><span class="p">})</span>
+            <span class="k">if</span> <span class="n">xml_tag</span> <span class="o">==</span> <span class="s1">&#39;stitre2&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_xhtml_tag</span><span class="p">(</span><span class="n">ass_list</span><span class="p">,</span> <span class="n">xml_tag</span><span class="p">,</span> <span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="s1">&#39;rendition&#39;</span><span class="p">:</span> <span class="s1">&#39;#ssectiontitle&#39;</span><span class="p">})</span>
+            <span class="k">if</span> <span class="n">xml_tag</span> <span class="o">==</span> <span class="s1">&#39;stitre3&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_xhtml_tag</span><span class="p">(</span><span class="n">ass_list</span><span class="p">,</span> <span class="n">xml_tag</span><span class="p">,</span> <span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="s1">&#39;rendition&#39;</span><span class="p">:</span> <span class="s1">&#39;#sssectiontitle&#39;</span><span class="p">})</span>
+            <span class="k">if</span> <span class="n">xml_tag</span> <span class="o">==</span> <span class="s1">&#39;stitre4&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_xhtml_tag</span><span class="p">(</span><span class="n">ass_list</span><span class="p">,</span> <span class="n">xml_tag</span><span class="p">,</span> <span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="s1">&#39;rendition&#39;</span><span class="p">:</span> <span class="s1">&#39;#ssssectiontitle&#39;</span><span class="p">})</span>
+            <span class="c1"># Only stop at this level for now.</span>
+            <span class="c1"># We will see later if more level</span>
+            <span class="c1"># is needed.</span>
+
+            <span class="c1"># Table</span>
+            <span class="c1"># Note</span>
+            <span class="c1"># Image</span>
+
+            <span class="c1"># Text bloc</span>
+            <span class="k">if</span> <span class="n">xml_tag</span> <span class="o">==</span> <span class="s1">&#39;caption&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_xhtml_tag</span><span class="p">(</span><span class="n">ass_list</span><span class="p">,</span> <span class="n">xml_tag</span><span class="p">,</span> <span class="s1">&#39;caption&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">xml_tag</span> <span class="o">==</span> <span class="s1">&#39;author&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_xhtml_tag</span><span class="p">(</span><span class="n">ass_list</span><span class="p">,</span> <span class="n">xml_tag</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_update_xhtml_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ass_list</span><span class="p">,</span> <span class="n">xml_tag</span><span class="p">,</span> <span class="n">new_tag_name</span><span class="p">,</span> <span class="n">att</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get the xhtml tag and rename the tag to their respective name and attribute.</span>
+
+<span class="sd">        :param dict att: Liste of attribute.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">xhtml_tag</span> <span class="ow">in</span> <span class="n">ass_list</span><span class="p">[</span><span class="n">xml_tag</span><span class="p">]:</span>
+            <span class="n">element_lst</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">xhtml_css</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">ass_list</span><span class="p">[</span><span class="n">xml_tag</span><span class="p">][</span><span class="n">xhtml_tag</span><span class="p">]):</span>
+                <span class="n">xpath_val</span> <span class="o">=</span> <span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="n">xhtml_tag</span> <span class="o">+</span> \
+                    <span class="s1">&#39;[contains(@class, &quot;&#39;</span> <span class="o">+</span> <span class="n">xhtml_css</span> <span class="o">+</span> <span class="s1">&#39;&quot;)]&#39;</span>
+                <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">xpath_val</span><span class="p">)):</span>
+                    <span class="n">element</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">new_tag_name</span>
+
+                    <span class="c1"># If some attribute are specified</span>
+                    <span class="k">if</span> <span class="n">att</span> <span class="o">!=</span> <span class="p">{}:</span>
+                        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">att</span><span class="p">:</span>
+                            <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">att</span><span class="p">[</span><span class="n">val</span><span class="p">]</span>
+
+                    <span class="c1"># Remove the class and style attribute after the</span>
+                    <span class="c1"># conversion</span>
+                    <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;style&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="khTag.add_parent"><a class="viewcode-back" href="../../sample.html#sample.xml.khTag.add_parent">[docs]</a>    <span class="k">def</span> <span class="nf">add_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">new_parent</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Enveloppe the tag with the new specified parent with these attributes.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">new_tag</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">new_parent</span><span class="p">)</span>  <span class="c1"># &lt;a&gt;&lt;/a&gt;</span>
+        <span class="n">new_tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">dec</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>            <span class="c1"># &lt;a attrib=&quot;value&quot;&gt;&lt;/a&gt;</span>
+        <span class="n">tag</span><span class="o">.</span><span class="n">addnext</span><span class="p">(</span><span class="n">new_tag</span><span class="p">)</span>                 <span class="c1"># &lt;b&gt;&lt;/b&gt;&lt;a attrib=&quot;value&quot;&gt;&lt;/a&gt;</span>
+        <span class="n">new_tag</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>                  <span class="c1"># &lt;a attrib=&quot;value&quot;&gt;&lt;b&gt;&lt;/b&gt;&lt;/a&gt;</span>
+
+        <span class="c1"># BUG : This is necessary for tag cleaning process but it remove</span>
+        <span class="c1"># needed tag too so I suggest to disable it for now until we can</span>
+        <span class="c1"># finding the way to use it correctly.</span>
+        <span class="c1">#</span>
+        <span class="c1"># If enabled, the conversion to lowercase doesn&#39;t work for the</span>
+        <span class="c1"># small caps.</span>
+        <span class="k">if</span> <span class="n">tag</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;span&#39;</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">new_tag</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+            <span class="c1">#etree.strip_attributes(tag, {&#39;class&#39;, &#39;style&#39;})</span>
+            <span class="c1">#etree.strip_tags(new_tag, tag.tag)</span>
+
+            <span class="c1"># Only remove the class and style attribute</span>
+            <span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;style&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Hantsaniala.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0a',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: ''
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

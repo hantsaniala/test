@@ -1,0 +1,687 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sample.css &mdash; ePub2XML 1.0a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="ePub2XML 1.0a documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ePub2XML
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../convert.html">Procédure de conversion ePub vers XML TEI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">toXML</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ePub2XML</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>sample.css</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sample.css</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">import</span> <span class="nn">tinycss</span>
+
+
+<div class="viewcode-block" id="CSS"><a class="viewcode-back" href="../../sample.html#sample.css.CSS">[docs]</a><span class="k">class</span> <span class="nc">CSS</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Get CSS file list from the ePub temp extracted folder and parse it.</span>
+
+<span class="sd">    :return: CSS Object</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Parsing css file&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_css_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_css</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_styles</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_css_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_list</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_css_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span> <span class="o">=</span> <span class="n">tinycss</span><span class="o">.</span><span class="n">make_parser</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">css_file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_css_list</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">css_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_styles</span> <span class="o">+=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parsed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">parse_stylesheet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_styles</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parsed</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CSS.name"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.name">[docs]</a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span></div>
+
+<div class="viewcode-block" id="CSS.list_rule"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.list_rule">[docs]</a>    <span class="k">def</span> <span class="nf">list_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return CSS object list as dict.</span>
+
+<span class="sd">        :return: CSS list</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_css</span></div>
+
+<div class="viewcode-block" id="CSS.unit_parse"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.unit_parse">[docs]</a>    <span class="k">def</span> <span class="nf">unit_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get the unit.</span>
+
+<span class="sd">        :return: Parsed unit</span>
+<span class="sd">        :rtype: str or None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">rgx</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="s2">r&quot;(?P&lt;ent&gt;([0-9])+)(\.(?P&lt;dec&gt;([0-9]+))?)(?P&lt;unit&gt;(px|em|pt|\%))&quot;</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">rgx</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">res</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;ent&#39;</span><span class="p">),</span> <span class="n">res</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;dec&#39;</span><span class="p">),</span> <span class="n">res</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;unit&#39;</span><span class="p">)}</span></div>
+
+<div class="viewcode-block" id="CSS.parse"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parsed</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get the file, parse and return the CSS object as list.</span>
+
+<span class="sd">        :param obj parsed: Parsed rule from CSS file as Object</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">parsed</span><span class="o">.</span><span class="n">rules</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">parsed</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
+                <span class="c1"># logging.debug(&#39;&#39;.join(t.as_css() for t in rule.selector))</span>
+                <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">selector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">rule</span><span class="o">.</span><span class="n">selector</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span> <span class="o">=</span> <span class="n">CSSRule</span><span class="p">()</span>
+                        <span class="c1"># logging.debug(t.as_css())</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">as_css</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">dec</span> <span class="ow">in</span> <span class="n">rule</span><span class="o">.</span><span class="n">declarations</span><span class="p">:</span>
+                            <span class="c1"># logging.debug(&#39;\t{0}: {1}&#39;.format(dec.name,</span>
+                            <span class="c1"># dec.value.as_css()))</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">attrib</span> <span class="o">=</span> <span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">dec</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">as_css</span><span class="p">())</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_css</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CSS.generate_list"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.generate_list">[docs]</a>    <span class="k">def</span> <span class="nf">generate_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Generate the css file list in the ePub tmp folder.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">,</span> <span class="s1">&#39;OEBPS&#39;</span><span class="p">,</span> <span class="s1">&#39;Styles&#39;</span><span class="p">,</span> <span class="s1">&#39;*.css&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="CSS.find_by_name"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.find_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">find_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Find rule by rule name.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">rule</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_css</span> <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="CSS.get_alignment"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.get_alignment">[docs]</a>    <span class="k">def</span> <span class="nf">get_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="p">[]:</span>
+                <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;text-align&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;text-align&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CSS.is_True"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.is_True">[docs]</a>    <span class="k">def</span> <span class="nf">is_True</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">dec</span><span class="p">]</span> <span class="o">==</span> <span class="n">val</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CSS.is_normal_only"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.is_normal_only">[docs]</a>    <span class="k">def</span> <span class="nf">is_normal_only</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls_val</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_True</span><span class="p">(</span><span class="n">cls_val</span><span class="p">,</span> <span class="s1">&#39;font-style&#39;</span><span class="p">,</span> <span class="s1">&#39;normal&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_True</span><span class="p">(</span><span class="n">cls_val</span><span class="p">,</span> <span class="s1">&#39;font-weight&#39;</span><span class="p">,</span> <span class="s1">&#39;normal&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CSS.is_italic"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.is_italic">[docs]</a>    <span class="k">def</span> <span class="nf">is_italic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls_val</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_True</span><span class="p">(</span><span class="n">cls_val</span><span class="p">,</span> <span class="s1">&#39;font-style&#39;</span><span class="p">,</span> <span class="s1">&#39;italic&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CSS.is_bold"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.is_bold">[docs]</a>    <span class="k">def</span> <span class="nf">is_bold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls_val</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_True</span><span class="p">(</span><span class="n">cls_val</span><span class="p">,</span> <span class="s1">&#39;font-weight&#39;</span><span class="p">,</span> <span class="s1">&#39;bold&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CSS.is_bold_italic"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.is_bold_italic">[docs]</a>    <span class="k">def</span> <span class="nf">is_bold_italic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls_val</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_True</span><span class="p">(</span><span class="n">cls_val</span><span class="p">,</span> <span class="s1">&#39;font-style&#39;</span><span class="p">,</span> <span class="s1">&#39;italic&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_True</span><span class="p">(</span><span class="n">cls_val</span><span class="p">,</span> <span class="s1">&#39;font-weight&#39;</span><span class="p">,</span> <span class="s1">&#39;bold&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CSS.is_sup"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.is_sup">[docs]</a>    <span class="k">def</span> <span class="nf">is_sup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls_val</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_True</span><span class="p">(</span><span class="n">cls_val</span><span class="p">,</span> <span class="s1">&#39;vertical-align&#39;</span><span class="p">,</span> <span class="s1">&#39;super&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CSS.is_sub"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.is_sub">[docs]</a>    <span class="k">def</span> <span class="nf">is_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls_val</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_True</span><span class="p">(</span><span class="n">cls_val</span><span class="p">,</span> <span class="s1">&#39;vertical-align&#39;</span><span class="p">,</span> <span class="s1">&#39;sub&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CSS.is_pcap"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.is_pcap">[docs]</a>    <span class="k">def</span> <span class="nf">is_pcap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls_val</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_True</span><span class="p">(</span><span class="n">cls_val</span><span class="p">,</span> <span class="s1">&#39;font-variant&#39;</span><span class="p">,</span> <span class="s1">&#39;small-caps&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CSS.is_retrait"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.is_retrait">[docs]</a>    <span class="k">def</span> <span class="nf">is_retrait</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CSS.has_para_style"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.has_para_style">[docs]</a>    <span class="k">def</span> <span class="nf">has_para_style</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CSS.has_char_style"><a class="viewcode-back" href="../../sample.html#sample.css.CSS.has_char_style">[docs]</a>    <span class="k">def</span> <span class="nf">has_char_style</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="PriorityRule"><a class="viewcode-back" href="../../sample.html#sample.css.PriorityRule">[docs]</a><span class="k">class</span> <span class="nc">PriorityRule</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Priority class to define what is the priority with these style.</span>
+
+<span class="sd">    :return: alignement</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">css</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_css</span> <span class="o">=</span> <span class="n">css</span>
+
+<div class="viewcode-block" id="PriorityRule.priority"><a class="viewcode-back" href="../../sample.html#sample.css.PriorityRule.priority">[docs]</a>    <span class="k">def</span> <span class="nf">priority</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">rule_dec</span><span class="o">=</span><span class="s1">&#39;text-align&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get the priority from style or class if they exist.</span>
+
+<span class="sd">        :return: alignement</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># By default, the priority is for the style attribute found in the tag.</span>
+        <span class="c1"># So if the style attribute exist, we must first check if the needed</span>
+        <span class="c1"># value can be found here. If not, we will check the class attribute if</span>
+        <span class="c1"># exist and find if there is the needed param in it too. After we will</span>
+        <span class="c1"># check the priority of the class rule if there are many because the</span>
+        <span class="c1"># last rule is always the priority. But if we cannot find it in the</span>
+        <span class="c1"># last, we must check the previous rule if there is in.</span>
+        <span class="c1">#</span>
+        <span class="c1"># STRUCT :</span>
+        <span class="c1">#</span>
+        <span class="c1"># if has style</span>
+        <span class="c1">#   if need_param in style</span>
+        <span class="c1">#       get need_value from style</span>
+        <span class="c1">#   elif has class</span>
+        <span class="c1">#       if need_param in class</span>
+        <span class="c1">#           get need_value from class</span>
+        <span class="c1">#       else</span>
+        <span class="c1">#           set default_value</span>
+        <span class="c1">#   else</span>
+        <span class="c1">#       set default_value</span>
+        <span class="c1"># elif has class</span>
+        <span class="c1">#   if need_param in class</span>
+        <span class="c1">#       get need_value from class</span>
+        <span class="c1">#   else</span>
+        <span class="c1">#       set default_value</span>
+        <span class="c1"># else</span>
+        <span class="c1">#   set default_value</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_style</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; has style...&#39;</span><span class="p">)</span>
+            <span class="n">ePub_stl</span> <span class="o">=</span> <span class="n">ePubStyle</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Has a declaration : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ePub_stl</span><span class="o">.</span><span class="n">has_dec</span><span class="p">()))</span>
+            
+            <span class="c1"># FIXME : Value still False. Semantic error.</span>
+            <span class="k">return</span> <span class="n">ePub_stl</span><span class="o">.</span><span class="n">declaration</span><span class="p">(</span><span class="n">rule_dec</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_class</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; has class...&#39;</span><span class="p">)</span>
+            <span class="n">ePub_cls</span> <span class="o">=</span> <span class="n">ePubClass</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_css</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ePub_cls</span><span class="o">.</span><span class="n">declaration</span><span class="p">(</span><span class="n">rule_dec</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Daaaaahhhh.... No needed declaration in it too...&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_to_default</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PriorityRule.has_style"><a class="viewcode-back" href="../../sample.html#sample.css.PriorityRule.has_style">[docs]</a>    <span class="k">def</span> <span class="nf">has_style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Test if the tag Element has the the syle attribute in.</span>
+
+<span class="sd">        :return: boolean</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;style&#39;</span> <span class="ow">in</span> <span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PriorityRule.has_class"><a class="viewcode-back" href="../../sample.html#sample.css.PriorityRule.has_class">[docs]</a>    <span class="k">def</span> <span class="nf">has_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Test if the tag Element has the the class attribute in.</span>
+
+<span class="sd">        :return: boolean</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;class&#39;</span> <span class="ow">in</span> <span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PriorityRule.set_to_default"><a class="viewcode-back" href="../../sample.html#sample.css.PriorityRule.set_to_default">[docs]</a>    <span class="k">def</span> <span class="nf">set_to_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="ePubClass"><a class="viewcode-back" href="../../sample.html#sample.css.ePubClass">[docs]</a><span class="k">class</span> <span class="nc">ePubClass</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Get the alignment value from the tag.</span>
+
+<span class="sd">    :return: align</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">css</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span> <span class="o">=</span> <span class="n">tag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_css</span> <span class="o">=</span> <span class="n">css</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_dec</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_many_rule</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dec</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<div class="viewcode-block" id="ePubClass.declaration"><a class="viewcode-back" href="../../sample.html#sample.css.ePubClass.declaration">[docs]</a>    <span class="k">def</span> <span class="nf">declaration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_dec</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get the priority of the class declaration and return the result.</span>
+<span class="sd">        </span>
+<span class="sd">        :return: declaration</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_many_rule</span><span class="p">():</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Grr... it has many rule (T T)&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_r_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rule_list</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_list</span><span class="p">)</span>
+            <span class="k">for</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_list</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">find_dec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="p">,</span> <span class="n">rule_dec</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_dec</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Found the declaration from many rule :D&#39;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dec</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Not declaration found on it... &#39;</span><span class="p">)</span>
+                    <span class="k">continue</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_many_rule</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;class&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;So it has only one class rule :D&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">find_dec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">],</span> <span class="n">rule_dec</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_dec</span><span class="p">():</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Found the declaration :D&#39;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dec</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Setting it to default value..&#39;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_to_default</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Setting it to default value..&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_to_default</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Setting it to default value..&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_to_default</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ePubClass.find_dec"><a class="viewcode-back" href="../../sample.html#sample.css.ePubClass.find_dec">[docs]</a>    <span class="k">def</span> <span class="nf">find_dec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="n">rule_dec</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Find the declaration by name from the CSS file.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule_dec</span> <span class="o">=</span> <span class="n">rule_dec</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="p">[]:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_rule_dec</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_has_dec</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_dec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_rule_dec</span><span class="p">]</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dec</span><span class="p">))</span>
+
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="ePubClass.has_dec"><a class="viewcode-back" href="../../sample.html#sample.css.ePubClass.has_dec">[docs]</a>    <span class="k">def</span> <span class="nf">has_dec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_dec</span></div>
+
+<div class="viewcode-block" id="ePubClass.get_dec"><a class="viewcode-back" href="../../sample.html#sample.css.ePubClass.get_dec">[docs]</a>    <span class="k">def</span> <span class="nf">get_dec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dec</span></div>
+
+<div class="viewcode-block" id="ePubClass.find_by_name"><a class="viewcode-back" href="../../sample.html#sample.css.ePubClass.find_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">find_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_name</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Find rule by name.</span>
+
+<span class="sd">        Check if the rule name is in the rule list generated from the CSS file.</span>
+
+<span class="sd">        :return: rule</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">rule</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_css</span><span class="o">.</span><span class="n">_css</span> <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">rule_name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ePubClass.has_many_rule"><a class="viewcode-back" href="../../sample.html#sample.css.ePubClass.has_many_rule">[docs]</a>    <span class="k">def</span> <span class="nf">has_many_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Test if the tag has many rule inside the class attribute.</span>
+
+<span class="sd">        :param lxml.Element tag: Tag element to parse</span>
+<span class="sd">        :return: boolean</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_has_many_rule</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_many_rule</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_many_rule</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_many_rule</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">e</span></div>
+
+<div class="viewcode-block" id="ePubClass.get_rule_list"><a class="viewcode-back" href="../../sample.html#sample.css.ePubClass.get_rule_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_rule_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get the rule list if rule is more than one in one tag.</span>
+
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">e</span></div>
+
+<div class="viewcode-block" id="ePubClass.set_to_default"><a class="viewcode-back" href="../../sample.html#sample.css.ePubClass.set_to_default">[docs]</a>    <span class="k">def</span> <span class="nf">set_to_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return the default value.</span>
+<span class="sd">        </span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;justify&#39;</span></div></div>
+
+
+<div class="viewcode-block" id="ePubStyle"><a class="viewcode-back" href="../../sample.html#sample.css.ePubStyle">[docs]</a><span class="k">class</span> <span class="nc">ePubStyle</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Get the alignment value from the tag.</span>
+
+<span class="sd">    :return: align</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span> <span class="o">=</span> <span class="n">tag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule_dec</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_dec</span> <span class="o">=</span> <span class="kc">False</span>
+    
+<div class="viewcode-block" id="ePubStyle.declaration"><a class="viewcode-back" href="../../sample.html#sample.css.ePubStyle.declaration">[docs]</a>    <span class="k">def</span> <span class="nf">declaration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_dec</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;rule_dec : &#39;</span><span class="o">+</span><span class="n">rule_dec</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule_dec</span> <span class="o">=</span> <span class="n">rule_dec</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;style&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_stl_dec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;style&#39;</span><span class="p">]</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Style declaration : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stl_dec</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_style_match_rgx</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+                    <span class="s1">r&#39;(?P&lt;dec&gt;[\w-]+):(?P&lt;val&gt;([a-z\-]+)|(?P&lt;num&gt;[0-9\.]+)(?P&lt;unit&gt;cm|em|p[xt]|%?))(;?)&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_style_match_res</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_style_match_rgx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stl_dec</span><span class="p">)</span>
+
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Match result : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_style_match_res</span><span class="p">))</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style_match_res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style_match_res</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule_dec</span><span class="p">:</span>
+                            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_has_dec</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_dec</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Declaration : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dec</span><span class="p">))</span>
+                            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dec</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Don&#39;t know if it supposed to be continue or break</span>
+                <span class="k">pass</span>
+
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="ePubStyle.has_dec"><a class="viewcode-back" href="../../sample.html#sample.css.ePubStyle.has_dec">[docs]</a>    <span class="k">def</span> <span class="nf">has_dec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_dec</span></div>
+
+<div class="viewcode-block" id="ePubStyle.get_dec"><a class="viewcode-back" href="../../sample.html#sample.css.ePubStyle.get_dec">[docs]</a>    <span class="k">def</span> <span class="nf">get_dec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dec</span></div></div>
+
+
+<div class="viewcode-block" id="CSSRule"><a class="viewcode-back" href="../../sample.html#sample.css.CSSRule">[docs]</a><span class="k">class</span> <span class="nc">CSSRule</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Object from CSS parsing.</span>
+
+<span class="sd">    :return: CSSRule</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attrib</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        The Rule name as string.</span>
+
+<span class="sd">        :return: CSSRule.name</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">attrib</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        The Rule attribute as string.</span>
+
+<span class="sd">        :return: CSSRule.attrib</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrib</span>
+
+    <span class="nd">@attrib</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">attrib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">att</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attrib</span><span class="p">[</span><span class="n">att</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">att</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Hantsaniala.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0a',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: ''
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
